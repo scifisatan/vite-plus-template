@@ -77,6 +77,64 @@ Auto-fix issues where possible:
 vp check --fix
 ```
 
+## Cloudflare And Wrangler Deployment
+
+This template is configured to deploy as a Cloudflare Worker with static SPA assets.
+
+### Current Wrangler Configuration
+
+The project-level Wrangler config lives in [wrangler.jsonc](wrangler.jsonc) with the following behavior:
+
+- `name: "vp-template"`: Worker/service name used for deploys.
+- `compatibility_date: "2025-09-27"`: Pins runtime behavior to a known Cloudflare compatibility date.
+- `compatibility_flags: ["nodejs_compat"]`: Enables Node.js compatibility for packages that rely on Node APIs.
+- `observability.enabled: true`: Turns on Cloudflare observability telemetry for the Worker.
+- `assets.not_found_handling: "single-page-application"`: Routes unknown asset paths to your SPA entry point for client-side routing.
+
+### Local Preview (Cloudflare Runtime)
+
+To preview using Wrangler's local runtime:
+
+```bash
+vp run preview
+```
+
+This script builds first, then runs `wrangler dev` against the built output.
+
+### Deploy To Cloudflare
+
+Deploy with:
+
+```bash
+vp run deploy
+```
+
+This script builds first, then runs `wrangler deploy`.
+
+### First-Time Cloudflare Setup
+
+If this is your first deploy from this machine:
+
+1. Authenticate with Cloudflare:
+
+```bash
+vp exec wrangler login
+```
+
+2. Verify account access:
+
+```bash
+vp exec wrangler whoami
+```
+
+3. Run deploy:
+
+```bash
+vp run deploy
+```
+
+Note: `vite.config.ts` includes `@cloudflare/vite-plugin`, so local development and runtime integration are already wired for Cloudflare.
+
 ## Tailwind CSS Setup
 
 Tailwind is configured with the Vite plugin in [vite.config.ts](vite.config.ts) and loaded in [src/index.css](src/index.css) via:
